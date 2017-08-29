@@ -1,0 +1,59 @@
+# Sonatype Nexus with Self Signed Certificates
+
+## Start proxy and nodepki
+```
+docker-compose up -d proxy nodepki
+```
+(nodepki takes some time to start!)
+
+## proxy
+Set proxy in browser: type: "socks5", hostname: "docker_host", port: 1080
+
+## nodepki
+Goto http://nodepki:5000 and generate a certificate for host, eg. "nexus.example.local"
+
+### Mac OSX
+Double-click the root_certificate.pem iadd it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
+
+### ubuntu
+Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
+```
+ $ sudo mkdir -p /usr/share/ca-certificates/extra &&\
+    openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
+    sudo cp root_ca.cert.crt /usr/share/ca-certificates/extra
+```
+
+
+## Import certificates in my.p12
+```
+docker-compose run nodepki ash -c 'cd /certs/nexus.example.local && openssl pkcs12 -export -in signed.crt   -inkey domain.key  -chain -CAfile chained.pem   -name "my-domain.com" -out my.p12'
+```
+And use password 'changeit'
+
+## Generate keystore.jks
+```
+docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass changeit -destkeystore /nexus-data/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
+```
+
+## Start nexus
+```
+docker-compose up -d nexus
+docker-compose logs -f nexus
+```
+
+wait until these logs are shown:
+```
+nexus_1    | 2017-08-29 07:42:28,302+0000 INFO  [jetty-main-1] *SYSTEM org.eclipse.jetty.server.ServerConnector - Started ServerConnector@74fa680b{SSL,[ssl, http/1.1]}{0.0.0.0:443}
+nexus_1    | 2017-08-29 07:42:28,303+0000 INFO  [jetty-main-1] *SYSTEM org.eclipse.jetty.server.Server - Started @82804ms
+nexus_1    | 2017-08-29 07:42:28,304+0000 INFO  [jetty-main-1] *SYSTEM org.sonatype.nexus.bootstrap.jetty.JettyServer -
+nexus_1    | -------------------------------------------------
+nexus_1    |
+nexus_1    | Started Sonatype Nexus OSS 3.4.0-02
+nexus_1    |
+nexus_1    | -------------------------------------------------
+```
+
+Goto https://nexus.example.local
+
+# Trust root certificate
+
