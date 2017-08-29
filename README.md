@@ -2,7 +2,7 @@
 
 Setting up SSL certificates in [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) can be a somewhat [daunting task (like modifing jetty-https.xml)](https://github.com/TerrenceMiao/nexus/wiki/Setup-HTTPS-access-in-Nexus-Repository-Manager-OSS-3.0.0) if one isn't a developer. 
 
-I've made a docker-compose.yml which will modify the jetty-https.xml with the right settings, installs a little PKI infrastructue whith the help of [NodePKI](https://github.com/aditosoftware/nodepki to generate root certificates which can be installed on all systems which need to connect to Nexus and which will generate a certificate for Nexus itself in Nexus' own keystore.
+I've made a docker-compose.yml which will modify the jetty-https.xml with the right settings, installs a little PKI infrastructue whith the help of [NodePKI](https://github.com/aditosoftware/nodepki) to generate root certificates which can be installed on all systems which need to connect to Nexus and which will generate a certificate for Nexus itself in Nexus' own keystore.
 
 TLDR; 
  * Generate root and server certificates with NodePKI
