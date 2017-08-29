@@ -15,7 +15,7 @@ Goto http://nodepki:5000 and generate root certificate and a certificate for you
 ### add root certificate in Mac OSX
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
 
-### root certificate in Ubuntu
+### add root certificate in Ubuntu
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
 ```
 $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
