@@ -12,15 +12,14 @@ Set proxy in browser: type: "socks5", hostname: "docker_host", port: 1080
 ## nodepki
 Goto http://nodepki:5000 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
 
-### add Mac OSX
+### add root certificate in Mac OSX
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
 
-### ubuntu
+### root certificate in Ubuntu
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
 ```
- $ sudo mkdir -p /usr/share/ca-certificates/extra &&\
-    openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
-    sudo cp root_ca.cert.crt /usr/share/ca-certificates/extra
+$ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
+   sudo cp root_ca.cert.crt /usr/local/share/ca-certificates/
 ```
 
 ## Generate keystore.jks for nexus
