@@ -10,14 +10,14 @@ TLDR;
  * import server certificate in Nexus and 
  * start Nexus 
 
-## Start NodePKI
+# Start NodePKI
 ```
 docker-compose up -d nodepki
 ```
-(nodepki takes some time to start!)
+Note: NodePKI takes some time to start!
 
-## Start NodePKI
-Goto [http://docker_host:5001/](http://docker_host:5001/) and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
+## Generate and Import root certificate
+Goto [http://docker_host:5001/](http://docker_host:5001/) and generate root certificate, download the certificate.
 
 ### Add root certificate in Mac OSX
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
@@ -29,6 +29,8 @@ $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
    sudo cp root_ca.cert.crt /usr/local/share/ca-certificates &&\
    sudo update-ca-certificates
 ```
+## Generate server certificate
+Generate server certificate for your nexus host, eg. "nexus.example.local" 
 
 ## Import certificate in Nexus' keystore
 ```
