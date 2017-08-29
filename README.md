@@ -6,14 +6,14 @@ docker-compose up -d proxy nodepki
 ```
 (nodepki takes some time to start!)
 
-## proxy
+## setup proxy
 Set proxy in browser: type: "socks5", hostname: "docker_host", port: 1080
 
 ## nodepki
-Goto http://nodepki:5000 and generate a certificate for host, eg. "nexus.example.local"
+Goto http://nodepki:5000 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
 
-### Mac OSX
-Double-click the root_certificate.pem iadd it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
+### add Mac OSX
+Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
 
 ### ubuntu
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
@@ -23,22 +23,19 @@ Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
     sudo cp root_ca.cert.crt /usr/share/ca-certificates/extra
 ```
 
-
-## Import certificates in my.p12
+## Generate keystore.jks for nexus
 ```
-docker-compose run nodepki ash -c 'cd /certs/nexus.example.local && openssl pkcs12 -export -in signed.crt   -inkey domain.key  -chain -CAfile chained.pem   -name "my-domain.com" -out my.p12'
+$ docker-compose run nodepki ash -c 'cd /certs/nexus.example.local && openssl pkcs12 -export -in signed.crt   -inkey domain.key  -chain -CAfile chained.pem   -name "my-domain.com" -out my.p12'
 ```
 And use password 'changeit'
-
-## Generate keystore.jks
 ```
-docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass changeit -destkeystore /nexus-data/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
+$ docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass changeit -destkeystore /nexus-data/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
 ```
 
 ## Start nexus
 ```
-docker-compose up -d nexus
-docker-compose logs -f nexus
+$ docker-compose up -d nexus
+$ docker-compose logs -f nexus
 ```
 
 wait until these logs are shown:
@@ -53,7 +50,4 @@ nexus_1    |
 nexus_1    | -------------------------------------------------
 ```
 
-Goto https://nexus.example.local
-
-# Trust root certificate
-
+Goto https://nexus.example.local which will show a valid certificate!
