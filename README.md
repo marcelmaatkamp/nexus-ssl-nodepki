@@ -19,7 +19,8 @@ Double-click the root_certificate.pem, add it to System in Keystore, double clic
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
 ```
 $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
-   sudo cp root_ca.cert.crt /usr/local/share/ca-certificates/
+   sudo cp root_ca.cert.crt /usr/local/share/ca-certificates &&\
+   sudo update-ca-certificates
 ```
 
 ## Generate keystore.jks for nexus
