@@ -30,7 +30,7 @@ $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
    sudo update-ca-certificates
 ```
 ## Generate server certificate
-Generate server certificate for your nexus host, eg. "nexus.example.local" 
+Generate server certificate for your nexus host, eg. "nexus.example.local". The files will be written into /certs which is linked into the nexus container and will picked up in the next step. 
 
 ## Import certificate in Nexus' keystore
 ```
@@ -41,7 +41,7 @@ And use password 'changeit'
 $ docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass changeit -destkeystore /nexus-data/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
 ```
 
-## Start nexus
+## Start Nexus
 ```
 $ docker-compose up -d nexus
 $ docker-compose logs -f nexus
