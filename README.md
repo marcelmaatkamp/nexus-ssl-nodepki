@@ -1,6 +1,6 @@
 # Sonatype Nexus with Self Signed Certificates
 
-Setting up SSL certificates in Sonatype Nexus can be a somewhat daunting task (like modifing server.xml) if one isn't a developer. Therefore I've made a docker-compose.yml which will modify the server.xml, installs a little PKI infrastructue (whith the help of https://github.com/aditosoftware/nodepki) which will generate root certificates which can be installed on all systems which need to connect to Nexus and generates a certificate for Nexus itself in Nexus' own keystore.
+Setting up SSL certificates in [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) can be a somewhat daunting task (like modifing server.xml) if one isn't a developer. Therefore I've made a docker-compose.yml which will modify the server.xml, installs a little PKI infrastructue (whith the help of [NodePKI](https://github.com/aditosoftware/nodepki) which will generate root certificates which can be installed on all systems which need to connect to Nexus and generates a certificate for Nexus itself in Nexus' own keystore.
 
 TLDR; 
  * Generate root and server certificates
@@ -15,7 +15,7 @@ docker-compose up -d nodepki
 (nodepki takes some time to start!)
 
 ## Start NodePKI
-Goto http://docker_host:5001 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
+Goto [http://docker_host:5001/](http://docker_host:5001/) and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
 
 ### Add root certificate in Mac OSX
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
@@ -55,4 +55,4 @@ nexus_1    |
 nexus_1    | -------------------------------------------------
 ```
 
-Goto https://nexus.example.local which will show a valid certificate!
+Goto https://nexus.example.local which will now show a valid certificate!
