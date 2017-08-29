@@ -2,16 +2,10 @@ version: '2'
 
 services:
 
- proxy:
-  image: vimagick/dante
-  restart: always
-  ports:
-   - "1080:1080"
-
  nodepki:
   image: adito/nodepki-docker
-  depends_on:
-   - proxy
+  ports:
+   - 5001:5000
   volumes:
    - certs:/certs
    - data:/root/nodepki/data
@@ -41,8 +35,6 @@ services:
    - JKS_PASSWORD=${KEYSTOREPASSWORD}
   ports:
    - 443:443
-   - 8443:8443
-   - 8081:8081
    - 5000:5000
 
 volumes:
