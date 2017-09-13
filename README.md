@@ -1,18 +1,33 @@
-# Sonatype Nexus with Self Signed Certificates
+# Sonatype Nexus with Self Signed Certificates in docker
 
-## Start proxy and nodepki
+Setting up SSL certificates in [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) can be a somewhat [daunting task (like modifing jetty-https.xml)](https://github.com/TerrenceMiao/nexus/wiki/Setup-HTTPS-access-in-Nexus-Repository-Manager-OSS-3.0.0) if one isn't a developer. 
+
+I've made a docker-compose.yml which will modify the jetty-https.xml with the right settings, installs a little PKI infrastructue whith the help of [NodePKI](https://github.com/aditosoftware/nodepki) to generate root certificates which can be installed on all systems which need to connect to Nexus and which will generate a server certificate for Nexus itself in Nexus' own keystore.
+
+TLDR; 
+ * Generate root and server certificates with NodePKI
+ * import root certificate on your host 
+ * import server certificate in Nexus and 
+ * start Nexus 
+
+# Start NodePKI
 ```
 docker-compose up -d nodepki
 ```
 (nodepki takes some time to start!)
 
 ## nodepki
-Goto http://localhost:5000 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
+Goto http://localhost:5001 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
+=======
+Note: NodePKI takes some time to start!
 
-### add root certificate in Mac OSX
+## Generate and Import root certificate
+Goto [http://docker_host:5001/](http://docker_host:5001/) and generate root certificate, download the certificate.
+
+### Add root certificate in Mac OSX
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
 
-### add root certificate in Ubuntu
+### Add root certificate in Ubuntu
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
 ```
 $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
@@ -20,16 +35,19 @@ $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
    sudo update-ca-certificates
 ```
 
-## Generate keystore.jks for nexus
+## Generate server certificate
+Generate server certificate for your nexus host, eg. "nexus.example.local". The files will be written into /certs which is linked into the nexus container and will picked up in the next step. 
+
+## Import certificate in Nexus' keystore
 ```
 $ docker-compose run nodepki ash -c 'cd /certs/nexus.example.local && openssl pkcs12 -export -in signed.crt   -inkey domain.key  -chain -CAfile chained.pem   -name "my-domain.com" -out my.p12'
 ```
 And use password 'password'
 ```
-$ docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass changeit -destkeystore /opt/sonatype/nexus/etc/ssl/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
+$ docker-compose run nexus ash -c 'cd /certs/nexus.example.local && keytool -importkeystore -deststorepass password -destkeystore /nexus-data/keystore.jks -srckeystore my.p12 -srcstoretype PKCS12'
 ```
 
-## Start nexus
+## Start Nexus
 ```
 $ docker-compose up -d nexus
 $ docker-compose logs -f nexus
@@ -47,4 +65,4 @@ nexus_1    |
 nexus_1    | -------------------------------------------------
 ```
 
-Goto https://nexus.example.local which will show a valid certificate!
+Goto https://nexus.example.local which will now show a valid certificate!
