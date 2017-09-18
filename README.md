@@ -76,13 +76,13 @@ Goto https://nexus.example.local which will now show a valid certificate!
 ## Import certs in java
 
 ```
-openssl x509 -outform der -in ~/root_ca.cert.pem -out certificate.der
-keytool -import -alias your-alias -keystore cacerts -file certificate.der
+keytool -printcert -rfc -sslserver hostname > hostname.pem
+keytool -importcert -file hostname.pem -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
 ```
 
 ```
-$ openssl x509 -in <(openssl s_client -tls1 -connect HOSTNAME:443) -out ~/example.crt
-$ sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
+openssl x509 -outform der -in ~/root_ca.cert.pem -out certificate.der
+sudo keytool -import -alias your-alias -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit -file certificate.der
 ```
 
 ## Fix OrientDB 
