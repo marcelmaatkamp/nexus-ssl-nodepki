@@ -11,23 +11,28 @@ TLDR;
  * start Nexus 
 
 # Start NodePKI
+
 ```
 docker-compose up -d nodepki
 ```
 (nodepki takes some time to start!)
 
 ## nodepki
+
 Goto http://localhost:5001 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
 =======
 Note: NodePKI takes some time to start!
 
 ## Generate and Import root certificate
+
 Goto [http://docker_host:5001/](http://docker_host:5001/) and generate root certificate, download the certificate.
 
 ### Add root certificate in Mac OSX
+
 Double-click the root_certificate.pem, add it to System in Keystore, double click it and "trust always" and close(!) the Keystore to save.
 
 ### Add root certificate in Ubuntu
+
 Convert cerificate to crt and place it in /usr/share/ca-certificates/extra
 ```
 $ openssl x509 -in root_ca.cert.pem -inform PEM -out root_ca.cert.crt &&\
@@ -70,8 +75,10 @@ Goto https://nexus.example.local which will now show a valid certificate!
 # Troubleshooting
 
 ## Import certs in java
+```
 $ openssl x509 -in <(openssl s_client -tls1 -connect HOSTNAME:443) -out ~/example.crt
 $ sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
+```
 
 ## Fix OrientDB 
 
