@@ -20,7 +20,6 @@ docker-compose up -d nodepki
 ## nodepki
 
 Goto http://localhost:5001 and generate root certificate and a certificate for your nexus host, eg. "nexus.example.local"
-=======
 Note: NodePKI takes some time to start!
 
 ## Generate and Import root certificate
