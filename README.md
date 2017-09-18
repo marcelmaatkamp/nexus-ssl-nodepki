@@ -66,3 +66,23 @@ nexus_1    | -------------------------------------------------
 ```
 
 Goto https://nexus.example.local which will now show a valid certificate!
+
+# Troubleshooting
+
+## Import certs in java
+$ openssl x509 -in <(openssl s_client -tls1 -connect HOSTNAME:443) -out ~/example.crt
+$ sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
+
+## Fix OrientDB 
+
+$ docker-compose exec nexus java -jar ./lib/support/nexus-orient-console.jar
+```
+CONNECT PLOCAL:/opt/sonatype/sonatype-work/nexus3/db/component admin admin
+REBUILD INDEX *
+REPAIR DATABASE --fix-graph
+REPAIR DATABASE --fix-links
+REPAIR DATABASE --fix-ridbags
+REPAIR DATABASE --fix-bonsai
+DISCONNECT
+```
+
