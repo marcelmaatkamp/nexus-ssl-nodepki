@@ -74,6 +74,12 @@ Goto https://nexus.example.local which will now show a valid certificate!
 # Troubleshooting
 
 ## Import certs in java
+
+```
+openssl x509 -outform der -in ~/root_ca.cert.pem -out certificate.der
+keytool -import -alias your-alias -keystore cacerts -file certificate.der
+```
+
 ```
 $ openssl x509 -in <(openssl s_client -tls1 -connect HOSTNAME:443) -out ~/example.crt
 $ sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
